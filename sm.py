@@ -23,7 +23,7 @@ name_list1 = ["Владимир Иванов",
               "Каролина Лян",
               "Лиза Локун",
               'Катерина Коблова',
-              "Иван Иванищев",
+
               "Иван Чабанов"]
 # кому дарят
 name_list2 = ["Владимир Иванов",
@@ -47,7 +47,7 @@ name_list2 = ["Владимир Иванов",
               "Каролина Лян",
               "Лиза Локун",
               'Катерина Коблова',
-              "Иван Иванищев",
+
               "Иван Чабанов"]
 id_store = [['847154448', "Роман Калякин"],
             ['681309508', "Антон Жданов"],
@@ -70,10 +70,8 @@ id_store = [['847154448', "Роман Калякин"],
             ["945990807", "Лиза Локун"],
             ["1284712472", "Катерина Коблова"],
             ["1213750305", "Александр Мухаметгалеев"],
-            ["1", "Иванищев"],
-            ["1206948771", "Иван Чабанов"]]
 
-id_cont = []
+            ["1206948771", "Иван Чабанов"]]
 
 
 class Game():
@@ -81,33 +79,53 @@ class Game():
         super().__init__()
         self.itog = {}
 
-    def main(self, name):
+    def main(self):
         # Выбираем, кому будут дарить
         ans = str(random.choice(name_list2))
         # проверяем, является-ли сам санта получателем
+        kluch_dar = []
+        id_cont = []
+        res = []
+        count = 0
+        kluch_dar.extend(id_store)
+        #print(kluch_dar)
+        for i in id_store:
+            id_cont.append(i[0])
+        for i in range(len(kluch_dar)):
+            kluch_dar[i][1] = ans = str(random.choice(id_cont))
+            while kluch_dar[i][0] == kluch_dar[i][1]:
+                kluch_dar[i][1] = ans = str(random.choice(id_cont))
+                print('был повтор')
+                count += 1
+                if count == 50:
+                    self.main()
+            id_cont.remove(str(ans))
 
-        if name == ans:
-            while name == ans:
-                ans = str(random.choice(name_list2))
+        return kluch_dar
 
-        # записываем в словарь имя санты и имя получателя
-        self.itog[name] = str(name_list2[name_list2.index(ans)])
 
-        # удаляем получателя, у котороо появился санта
-        name_list2.pop(name_list2.index(ans))
+    def naz_n(self, id_sant, name):
+        p = open("for_me.txt", "a", encoding='utf-8')
+        sp = self.main()
+        print(sp)
+        ans = "Никто"
+        ans_n = "Никтошеньки"
+        for i in sp:
+            if id_sant == i[0]:
+                ans = i[1]
+                print(ans)
+                break
+        print(id_store)
+        for i in id_store:
+            print(i)
+            if ans == i[0]:
+                ans_n = i[1]
+                print(ans_n)
+                break
+        p.write(f"Поздравляю, {name} ({id_sant}) , тебе выпал(a): {ans}\n")
+        p.close()
+        return (f"Поздравляю, {name} , тебе выпал(a): {ans_n}")
 
-        # Записываем в файл имя санты и имя получателя внутри файла
-        # f = open(f"{name}.txt", 'w', encoding='utf8')
-        # f.write(f"Поздравляю, {name}, тебе выпал: {self.itog[name]}")
-        # f.close()
-
-        f = open(f"Ключи.txt", "w", encoding='utf-8')
-        for i in self.itog:
-            x, y = i, self.itog[i]
-            f.write(f"Поздравляю, {x}, тебе выпал: {y}\n")
-        f.close()
-        # Пусть будет, для тестов удобно
-        # print((f"Поздравляю, {name}, тебе выпал(а): {self.itog[name]}"))
 
     # Функция возвращает текст с произвольным именем, которым представился пользователь, и именем, которое ему выпало.
     # Выпавшее имя удаляяется из списка NotSants
@@ -213,8 +231,8 @@ if __name__ == "__main__":
     ex = Game()
     # Вариант запуска для работы
     # for i in name_list1:
-    # ex.main(i)
-    print(ex.sec_main("1164395917", "Андрей Рыжиков"))
+    #print(ex.main()[0])
+    print(ex.naz_n("1164395917", "Андрей Рыжиков"))
     # ex.rep(1)
     # ex.chat()
 
